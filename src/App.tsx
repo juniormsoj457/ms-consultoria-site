@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import './index.css';
 
 type Consent = { necessary: boolean; preferences: boolean; analytics: boolean; marketing: boolean; savedAt: string };
