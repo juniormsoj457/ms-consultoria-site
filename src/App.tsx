@@ -1,67 +1,3 @@
-import { useEffect, useState } from 'react';
-import './index.css';
-
-type Consent = { necessary: boolean; preferences: boolean; analytics: boolean; marketing: boolean; savedAt: string };
-type ModalName = 'privacy' | 'cookies' | 'preferences' | null;
-
-const WHATSAPP = '5511998971326';
-const EMAIL = 'Ms.solucoesfinanceiras19@gmail.com';
-const CNPJ = '66.149.478/0001-96';
-const ADDRESS = 'Rua Aristides Benedito, Parque Residencial Triunfo, Nova Odessa – SP, CEP 13387-672';
-const DEFAULT_CONSENT: Consent = { necessary: true, preferences: false, analytics: false, marketing: false, savedAt: '' };
-
-function whatsappUrl(message: string) {
-  return `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(message)}`;
-}
-
-function updateGoogleConsent(consent: Consent) {
-  // Não carrega Google tags. Se uma integração real for adicionada depois,
-  // atualiza os sinais somente quando a função gtag já estiver configurada.
-  const w = window as Window & { gtag?: (...args: unknown[]) => void };
-  if (typeof w.gtag === 'function') {
-    w.gtag('consent', 'update', {
-      analytics_storage: consent.analytics ? 'granted' : 'denied',
-      ad_storage: consent.marketing ? 'granted' : 'denied',
-      ad_user_data: consent.marketing ? 'granted' : 'denied',
-      ad_personalization: consent.marketing ? 'granted' : 'denied',
-      functionality_storage: consent.preferences ? 'granted' : 'denied',
-      security_storage: 'granted',
-    });
-  }
-}
-
-export default function App() {
-  const [consent, setConsent] = useState<Consent>(DEFAULT_CONSENT);
-  const [bannerVisible, setBannerVisible] = useState(false);
-  const [modal, setModal] = useState<ModalName>(null);
-  const [draft, setDraft] = useState<Consent>(DEFAULT_CONSENT);
-  const [mobileMenu, setMobileMenu] = useState(false);
-  const [form, setForm] = useState({ name: '', phone: '', type: 'Plano empresarial (CNPJ)', city: '' });
-
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem('ms-consultoria-cookie-consent-v1');
-      if (raw) {
-        const saved = JSON.parse(raw) as Consent;
-        const next = { ...DEFAULT_CONSENT, ...saved, necessary: true };
-        setConsent(next);
-        setDraft(next);
-        updateGoogleConsent(next);
-      } else {
-        setBannerVisible(true);
-      }
-    } catch {
-      setBannerVisible(true);
-    }
-  }, []);
-
-  function saveConsent(next: Consent) {
-    const finalConsent = { ...next, necessary: true, savedAt: new Date().toISOString() };
-    try { localStorage.setItem('ms-consultoria-cookie-consent-v1', JSON.stringify(finalConsent)); } catch { /* site segue funcionando mesmo se armazenamento estiver indisponível */ }
-    setConsent(finalConsent);
-    setDraft(finalConsent);
-    updateGoogleConsent(finalConsent);
-    setBannerVisible(false);
     setModal(null);
   }
 
@@ -84,7 +20,7 @@ export default function App() {
   return (
     <div className="site-shell">
       <header className="site-header">
-        <a className="brand" href="#inicio" aria-label="M.S Consultoria - início"><img src="/ms-consultoria-site/logo-ms.jpg" alt="Logo M.S Consultoria — Saúde e Benefícios Empresariais" /></a>
+        <a className="brand" href="#inicio" aria-label="M.S Consultoria - início"><img src="/logo-nova.jpg" alt="Logo M.S Consultoria — Saúde e Benefícios Empresariais" /></a>
         <button className="menu-toggle" aria-label="Abrir menu" onClick={() => setMobileMenu(!mobileMenu)}>{mobileMenu ? '✕' : '☰'}</button>
         <nav className={mobileMenu ? 'main-nav open' : 'main-nav'}>
           {navItems.map(([label, href]) => <a key={href} href={href} onClick={() => setMobileMenu(false)}>{label}</a>)}
@@ -140,12 +76,12 @@ export default function App() {
           <div className="steps-grid"><article className="step-card"><span className="step-number">01</span><div className="step-icon">◎</div><h3>Entendemos seu perfil</h3><p>Conhecemos suas necessidades, região de atendimento e características dos beneficiários.</p></article><article className="step-card"><span className="step-number">02</span><div className="step-icon">⌕</div><h3>Avaliamos alternativas</h3><p>Verificamos as opções disponíveis para o perfil apresentado.</p></article><article className="step-card"><span className="step-number">03</span><div className="step-icon">≋</div><h3>Comparamos condições</h3><p>Analisamos rede, cobertura, valores, carências e regras contratuais.</p></article><article className="step-card"><span className="step-number">04</span><div className="step-icon">✓</div><h3>Orientamos sua escolha</h3><p>Ajudamos você a compreender a proposta antes de prosseguir.</p></article></div>
         </section>
 
-        <section className="section about-section" id="sobre"><div className="about-mark"><img src="/ms-consultoria-site/logo-ms.jpg" alt="M.S Consultoria" /></div><div className="about-copy"><span className="eyebrow">SOBRE A M.S CONSULTORIA</span><h2>Mais clareza para escolher. Mais segurança para decidir.</h2><p>Somos uma consultoria voltada à orientação na escolha de planos de saúde e benefícios empresariais. Nosso objetivo é ajudar pessoas, famílias e empresas a compreender e comparar as alternativas disponíveis de acordo com suas necessidades.</p><p>Com atendimento consultivo, buscamos tornar a análise das propostas mais clara, transparente e alinhada ao perfil de cada cliente.</p><a className="text-link" href="#contato">Converse com a nossa consultoria <span>↗</span></a></div></section>
+        <section className="section about-section" id="sobre"><div className="about-mark"><img src="/logo-nova.jpg" alt="M.S Consultoria" /></div><div className="about-copy"><span className="eyebrow">SOBRE A M.S CONSULTORIA</span><h2>Mais clareza para escolher. Mais segurança para decidir.</h2><p>Somos uma consultoria voltada à orientação na escolha de planos de saúde e benefícios empresariais. Nosso objetivo é ajudar pessoas, famílias e empresas a compreender e comparar as alternativas disponíveis de acordo com suas necessidades.</p><p>Com atendimento consultivo, buscamos tornar a análise das propostas mais clara, transparente e alinhada ao perfil de cada cliente.</p><a className="text-link" href="#contato">Converse com a nossa consultoria <span>↗</span></a></div></section>
 
         <section className="section contact-section" id="contato"><div className="contact-panel"><div className="contact-copy"><span className="eyebrow eyebrow-light">VAMOS CONVERSAR?</span><h2>Vamos encontrar uma opção adequada ao seu perfil?</h2><p>Converse com a M.S Consultoria e receba orientação para avaliar as alternativas disponíveis para você, sua família ou sua empresa.</p><a className="button button-gold" href={whatsappUrl('Olá! Gostaria de conversar com a M.S Consultoria sobre planos de saúde.')} target="_blank" rel="noreferrer">Falar com um consultor pelo WhatsApp <span>↗</span></a><div className="contact-details"><a href="tel:+5511998971326">☎ (11) 99897-1326</a><a href={`mailto:${EMAIL}`}>✉ {EMAIL}</a></div></div><form className="lead-form" onSubmit={submitForm}><h3>Solicite uma orientação</h3><p>Preencha os dados para iniciar o atendimento pelo WhatsApp.</p><label>Nome<input required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Como podemos chamar você?" /></label><label>Telefone / WhatsApp<input required type="tel" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="(00) 00000-0000" /></label><label>Tenho interesse em<select value={form.type} onChange={e => setForm({ ...form, type: e.target.value })}><option>Plano empresarial (CNPJ)</option><option>Plano individual ou familiar</option><option>Quero tirar dúvidas</option></select></label><label>Cidade e estado<input required value={form.city} onChange={e => setForm({ ...form, city: e.target.value })} placeholder="Ex.: Nova Odessa - SP" /></label><p className="form-privacy">Ao continuar, seus dados serão utilizados para responder à sua solicitação. Consulte nossa <button type="button" className="inline-link" onClick={() => setModal('privacy')}>Política de Privacidade</button>.</p><button className="button form-submit" type="submit">Continuar pelo WhatsApp <span>↗</span></button></form></div></section>
       </main>
 
-      <footer className="site-footer"><div className="footer-top"><div className="footer-brand"><img src="/ms-consultoria-site/logo-ms.jpg" alt="Logo M.S Consultoria" /><p>Saúde e Benefícios Empresariais.</p></div><div className="footer-column"><h4>Explore</h4><a href="#empresarial">Planos empresariais</a><a href="#individual-familiar">Planos individuais e familiares</a><a href="#sobre">Sobre nós</a></div><div className="footer-column"><h4>Fale conosco</h4><a href={whatsappUrl('Olá! Gostaria de falar com a M.S Consultoria.')} target="_blank" rel="noreferrer">WhatsApp: (11) 99897-1326</a><a href={`mailto:${EMAIL}`}>{EMAIL}</a><p>{ADDRESS}</p></div><div className="footer-column"><h4>Privacidade</h4><button onClick={() => setModal('privacy')}>Política de Privacidade</button><button onClick={() => setModal('cookies')}>Política de Cookies</button><button onClick={openPreferences}>Preferências de cookies</button></div></div><div className="footer-legal"><p><strong>M.S Consultoria</strong> · CNPJ {CNPJ}</p><p>As condições de contratação, elegibilidade, coberturas, carências, rede credenciada e valores dependem do produto, da operadora e das regras aplicáveis. As informações apresentadas têm caráter informativo e não substituem as condições contratuais.</p><span>© {new Date().getFullYear()} M.S Consultoria. Todos os direitos reservados.</span></div></footer>
+      <footer className="site-footer"><div className="footer-top"><div className="footer-brand"><img src="/logo-nova.jpg" alt="Logo M.S Consultoria" /><p>Saúde e Benefícios Empresariais.</p></div><div className="footer-column"><h4>Explore</h4><a href="#empresarial">Planos empresariais</a><a href="#individual-familiar">Planos individuais e familiares</a><a href="#sobre">Sobre nós</a></div><div className="footer-column"><h4>Fale conosco</h4><a href={whatsappUrl('Olá! Gostaria de falar com a M.S Consultoria.')} target="_blank" rel="noreferrer">WhatsApp: (11) 99897-1326</a><a href={`mailto:${EMAIL}`}>{EMAIL}</a><p>{ADDRESS}</p></div><div className="footer-column"><h4>Privacidade</h4><button onClick={() => setModal('privacy')}>Política de Privacidade</button><button onClick={() => setModal('cookies')}>Política de Cookies</button><button onClick={openPreferences}>Preferências de cookies</button></div></div><div className="footer-legal"><p><strong>M.S Consultoria</strong> · CNPJ {CNPJ}</p><p>As condições de contratação, elegibilidade, coberturas, carências, rede credenciada e valores dependem do produto, da operadora e das regras aplicáveis. As informações apresentadas têm caráter informativo e não substituem as condições contratuais.</p><span>© {new Date().getFullYear()} M.S Consultoria. Todos os direitos reservados.</span></div></footer>
 
       <a className="whatsapp-float" href={whatsappUrl('Olá! Acessei o site da M.S Consultoria e gostaria de mais informações.')} target="_blank" rel="noreferrer" aria-label="Falar com a M.S Consultoria pelo WhatsApp"><span>◔</span><small>Fale conosco</small></a>
 
